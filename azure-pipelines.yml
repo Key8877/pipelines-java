@@ -1,4 +1,23 @@
 # Starter pipeline
+- task: AzurePowerShell@5
+  inputs:
+    azureSubscription: 'csp-gammon-aiml(c1846e32-d865-470b-86fa-daee66cd7830)'
+    ScriptType: 'InlineScript'
+    Inline: |
+      # Set array
+      $azPolicy = @()
+      #Get Subscription.
+      #If you want to run through all subscriptions that you have access for,
+      #then don't give subscriptionID as shown below commented line
+      #$azSubs = Get-AzSubscription
+      $azSubs = Get-AzSubscription -SubscriptionId $(AzSubscriptionID)
+      # Loop through all Azure Subscriptions
+      foreach ($azSub in $azSubs) {
+      Set-AzContext $azSub.id | Out-Null
+      $nonCompliantResources = Get-AzPolicyState -PolicyAssignmentName $(AzPolicyAssignmentName) -Filter "ComplianceState eq 'NonCompliant'"
+      $nonCompliantResources | Select-Object resourcegroup, @{N='ResourceName';E={$_.resourceId.Split('/')[-1]}},resourcetype,compliancestate,resourcelocation | Export-Csv .\$(AzSubscriptionID).csv -NoTypeInformation
+      }
+    azurePowerShellVersion: 'LatestVersion'
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
