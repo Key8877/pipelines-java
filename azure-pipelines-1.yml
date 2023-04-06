@@ -1,4 +1,23 @@
 # Maven
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'csp-gammon-aiml(c1846e32-d865-470b-86fa-daee66cd7830)'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Set array
+      $azPolicy = @()
+      #Get Subscription.
+      #If you want to run through all subscriptions that you have access for,
+      #then don't give subscriptionID as shown below commented line
+      #$azSubs = Get-AzSubscription
+      $azSubs = Get-AzSubscription -SubscriptionId $(AzSubscriptionID)
+      # Loop through all Azure Subscriptions
+      foreach ($azSub in $azSubs) {
+      Set-AzContext $azSub.id | Out-Null
+      $nonCompliantResources = Get-AzPolicyState -PolicyAssignmentName $(AzPolicyAssignmentName) -Filter "ComplianceState eq 'NonCompliant'"
+      $nonCompliantResources | Select-Object resourcegroup, @{N='ResourceName';E={$_.resourceId.Split('/')[-1]}},resourcetype,compliancestate,resourcelocation | Export-Csv .\$(AzSubscriptionID).csv -NoTypeInformation
+      }
 # Build your Java project and run tests with Apache Maven.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
