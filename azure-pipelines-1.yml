@@ -5,11 +5,11 @@
     scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      # Set array
+#Set array
       $azPolicy = @()
-      #Get Subscription.
-      #If you want to run through all subscriptions that you have access for,
-      #then don't give subscriptionID as shown below commented line
+#Get Subscription.
+#If you want to run through all subscriptions that you have access for,
+#then don't give subscriptionID as shown below commented line
       #$azSubs = Get-AzSubscription
       $azSubs = Get-AzSubscription -SubscriptionId $(AzSubscriptionID)
       # Loop through all Azure Subscriptions
