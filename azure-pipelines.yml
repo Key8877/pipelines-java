@@ -4,7 +4,7 @@ $azPolicy = @()
 #If you want to run through all subscriptions that you have access for,
 #then don't give subscriptionID as shown below commented line
 #$azSubs = Get-AzSubscription
-$azSubs = Get-AzSubscription -SubscriptionId $(AzSubscriptionID)
+$azSubs = Get-AzSubscription -SubscriptionId c1846e32-d865-470b-86fa-daee66cd7830
 # Loop through all Azure Subscriptions
 foreach ($azSub in $azSubs) {
 Set-AzContext $azSub.id | Out-Null
